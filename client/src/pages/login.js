@@ -7,6 +7,8 @@ const Login = () => {
   const initialState = { email: "", password: "" };
   const [userData, setUserData] = useState(initialState);
   const { email, password } = userData;
+  
+  const [typePass,setTypePass] = useState(false);
 
   const dispatch = useDispatch()
 
@@ -18,7 +20,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(userData)
-    dispatch(login())
+    dispatch(login(userData))
   }
 
   return (
@@ -42,14 +44,19 @@ const Login = () => {
         </div>
         <div class="form-group">
           <label htmlFor="exampleInputPassword1">Password</label>
-          <input
-            type="password"
-            name="password"
-            className="form-control"
-            id="exampleInputPassword1"
-            onChange={handleChangeInput}
-            value = {password}
-          />
+          <div className="pass">
+              <input
+                type={typePass ? "text" : "password"}
+                name="password"
+                className="form-control"
+                id="exampleInputPassword1"
+                onChange={handleChangeInput}
+                value = {password}
+              />
+              <small onClick={()=> setTypePass(!typePass)}>
+                {typePass ? 'Hide' : 'Show'}
+              </small>
+          </div>
         </div>
         <button type="submit" className="btn btn-dark w-100" disabled = {email && password ? false : true }>
           Login

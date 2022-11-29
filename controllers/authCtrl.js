@@ -56,16 +56,16 @@ const authCtrl = {
     },
     login: async (req,res)=>{
         try {
-            const { username, password } = req.body
+            const { email, password } = req.body
+            //console.log(req.body)
 
-            const user = await Users.findOne({username}).populate("followers following","-password")
-            if(!user) return res.status(400).json({msg:"User not found"})
+            const user = await Users.findOne({email})
+            .populate("followers following", "avatar username fullname followers following")
+            //console.log(user)
+            if(!user) return res.status(400).json({msg: "This email does not exist."})
 
             const isMatch = await bcrypt.compare(password, user.password)
-            if(!isMatch) return res.status(400).json({msg:"Password is not match"})
-
-            //res.json({user})
-            //console.log(newUser)
+            if(!isMatch) return res.status(400).json({msg: "Password is incorrect."})
 
             const access_token = createAccessToken({id: user._id})
             const refresh_token = createRefreshToken({id: user._id})

@@ -6,12 +6,41 @@ export const TYPES = {
 }
 
 
+
+
+
 export const login = (data)=>async(dispatch)=>{
     try {
-        dispatch({type: 'NOTIFY', payload: {loading: true}})
+        dispatch({
+            type: 'NOTIFY',
+            payload: {loading: true}
+        })
+
         const res = await postDataAPI('login', data)
-        console.log(res)
-    } catch (error) {
+
+        dispatch({
+            type: 'AuTH',
+            payload: {
+                token: res.data.access_token,
+                user: res.data.user
+            }
+        })
+
+        localStorage.setItem("firsLogin",true)
+
+        dispatch({
+            type: 'NOTIFY',
+            payload: {
+                success: res.data.msg
+            }
+        })
         
+    } catch (err) {
+        dispatch({
+            type: 'NOTIFY',
+            payload: {
+                error: err.responce.data
+            }
+        })
     }
 }
