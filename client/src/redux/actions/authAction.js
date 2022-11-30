@@ -39,7 +39,7 @@ export const login = (data)=>async(dispatch)=>{
         dispatch({
             type: 'NOTIFY',
             payload: {
-                error: err.responce.data
+                error: err.responce.data.msg
             }
         })
     }

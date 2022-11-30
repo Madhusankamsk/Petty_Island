@@ -37,3 +37,5 @@ code {
 
 /*Auth css*/
 @import url("./styles/auth.css");
+/*Loading css*/
+@import url("./styles/loading.css");
