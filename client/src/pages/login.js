@@ -19,7 +19,7 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(userData)
+    //console.log(userData)
     dispatch(login(userData))
   }
 
