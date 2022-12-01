@@ -1,5 +1,6 @@
 import {postDataAPI} from '../../utils/fetchDate'
 import {GLOBALTYPES } from './globalTypes'
+import valid from '../../utils/valid'
 
 export const login = (data)=>async(dispatch)=>{
     try {
@@ -38,8 +39,7 @@ export const login = (data)=>async(dispatch)=>{
     }
 }
 
-
-export const refreshToken = ()=> async (dispatch) =>{
+export const refreshToken = ()=> async(dispatch) =>{
     const firsLogin = localStorage.getItem("firstLogin");
     if(firsLogin){
         dispatch({type: GLOBALTYPES.ALERT, payload: {loading: true}})
@@ -64,5 +64,58 @@ export const refreshToken = ()=> async (dispatch) =>{
                 }
             })
         }
+    }
+}
+
+export const register = (data) =>async(dispatch)=>{
+    
+    const check = valid(data)
+    //console.log(check)
+    if(check.errLength > 0 )
+    return dispatch({type: GLOBALTYPES.ALERT, payload: check.errMsg})
+
+    try {
+        dispatch({type: GLOBALTYPES.ALERT, payload:{loading : true}})
+        const res = await postDataAPI('register', data)
+        //console.log(res)
+        dispatch({
+            type: GLOBALTYPES.AUTH,
+            payload: {
+                token: res.data.access_token,
+                user: res.data.user
+            }
+        })
+        //console.log(res.data.access_token)
+        localStorage.setItem("firstLogin",true)
+
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {
+                success: res.data.msg
+            }
+        })
+
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {
+                error: err.responce.data.msg
+            }
+        })
+    }
+}
+
+export const logout = () => async (dispatch) => {
+    try {
+        localStorage.removeItem('firstLogin')
+        await postDataAPI('/logout')
+        window.location.href = '/'
+    } catch (err) {
+        dispatch({
+            type: GLOBALTYPES.ALERT,
+            payload: {
+                error: err.responce.data.msg
+            }
+        })
     }
 }
