@@ -13,13 +13,26 @@ const Search = () => {
   const dispatch = useDispatch()
 
   useEffect(()=>{
-      if(search && auth.token ){
+      if(search){
         //console.log(auth.token)
         getDataAPI(`search?username=${search}`,auth.token)
-        .then(res => console.log(res))
+        .then(res => setUsers(res.data.users))
+        .catch(err =>{
+          dispatch({
+            type: GLOBALTYPES.ALERT,payload:{error: err.response.data.msg}
+          })
+        })
+      }else{
+        setUsers([])
       }
   },[search,auth.token,dispatch])
   //console.log(users)
+
+  const handleClose = () => {
+    setSearch('')
+    setUsers([])
+  } 
+
   return (
     <form className = "search_form" >
       <input type='text' name = 'search' value={search} id = 'search'
@@ -28,8 +41,17 @@ const Search = () => {
             <span className='material-icons' >search</span>
             <span>search</span>
         </div>
-        <div className='close_search' >
+        <div className='close_search' onClick={handleClose} style={{opacity: users.length === 0 ? 0 : 1}}>
           &times;
+        </div>
+        <div className='users'>
+          {
+            search && users.map(user =>(
+              <Link key={user._id} to={`/profile/${user._id}`} onClick={handleClose} >
+                <UserCard user={user} border="border"/>
+              </Link>
+            ))
+          }
         </div>
     </form>
   )
