@@ -49,3 +49,5 @@ body {
   @import url("./header.css");
   /*Avatar css*/
   @import url("./avatar.css");
+  /*Profile css*/
+  @import url("./profile.css");
